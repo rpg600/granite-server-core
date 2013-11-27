@@ -23,6 +23,7 @@ package org.granite.gravity;
 
 import javax.servlet.ServletContext;
 
+import flex.messaging.messages.ErrorMessage;
 import org.granite.config.GraniteConfig;
 import org.granite.config.flex.ServicesConfig;
 import org.granite.context.GraniteContext;
@@ -39,12 +40,15 @@ import org.granite.messaging.jmf.SharedContext;
 public class GravityProxy implements Gravity {
 
 	private ServletContext servletContext;
-	
+
+    public GravityProxy() {
+    }
+
 	public GravityProxy(ServletContext servletContext) {
 		this.servletContext = servletContext;
 	}
 	
-	private Gravity getGravity() {
+	protected Gravity getGravity() {
 		return GravityManager.getGravity(servletContext);
 	}
 
@@ -128,9 +132,12 @@ public class GravityProxy implements Gravity {
     	return getGravity().handleMessage(channelFactory, message, skipInterceptor);
     }
     public Message publishMessage(AsyncMessage message) {
-    	return getGravity().publishMessage(message);
+    	return publishMessage(null, message);
     }
     public Message publishMessage(Channel fromChannel, AsyncMessage message) {
+        if (getGravity() == null)
+            return new ErrorMessage(message, new IllegalStateException("Gravity Proxy not yet ready"));
+
     	return getGravity().publishMessage(fromChannel, message);
     }
 }
