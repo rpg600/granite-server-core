@@ -23,7 +23,7 @@ package org.granite.tide.data;
 
 import java.util.*;
 
-public class DataUtils {
+public class Utils {
 	
 	public static List<Object[]> diffLists(List<?> oldList, List<?> newList) {
 		ListDiff listDiff = new ListDiff(oldList, newList);
